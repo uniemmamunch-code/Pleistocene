@@ -634,3 +634,19 @@ public class Dinofelis extends TamableAnimal implements NeutralMob, GeoEntity {
       }
    }
 }
+@SubscribeEvent
+public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+    Player player = event.player;
+    if (player.level().isClientSide() && event.phase == TickEvent.Phase.END) {
+        if (player.isPassenger() && player.getVehicle() instanceof LivingEntity vehicle) {
+            // Check if player is pressing jump (e.g., Minecraft.getInstance().options.keyJump.isDown())
+            if (Minecraft.getInstance().options.keyJump.isDown()) {
+                // Apply upward velocity if the vehicle is on the ground
+                if (vehicle.onGround()) {
+                    Vec3 currentMotion = vehicle.getDeltaMovement();
+                    vehicle.setDeltaMovement(currentMotion.x, 0.42D, currentMotion.z); // 0.42 is standard vanilla jump height
+                }
+            }
+        }
+    }
+}
